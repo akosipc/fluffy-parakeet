@@ -9,7 +9,6 @@ module Schema
     include ActiveRecord::Validations
 
     attribute :id,          String, default: SecureRandom.hex(6)
-    attribute :errors,      Array,  default: []
 
     def new_record?
       true
