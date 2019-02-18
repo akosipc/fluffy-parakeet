@@ -2,9 +2,9 @@ module Services
   class OrderProcessorError < StandardError; end
 
   class OrderProcessor
-    def initialize(collection, order, options = {})
+    def initialize(collection, request, options = {})
       @collection = collection
-      @order = order
+      @request = request
       @options = options
     end
 

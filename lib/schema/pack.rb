@@ -4,10 +4,7 @@ module Schema
     attribute :currency,  String,   default: "$"
     attribute :price,     Decimal,  default: 0.00
 
-    validates :quantity, numericality: true
-    validates :quantity, presence: true
-    validates :currency, presence: true
-    validates :price, presence: true
-    validates :price, numericality: true
+    validates :quantity, :price, numericality: true
+    validates :quantity, :currency, :price, presence: true
   end
 end

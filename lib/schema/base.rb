@@ -1,26 +1,21 @@
-require 'active_support/inflector'
+require 'active_support'
+require 'active_record'
 require 'virtus'
-
-require_relative '../validators/base'
-require_relative '../validators/presence'
-require_relative '../validators/numericality'
 
 module Schema
   class Base
     include Virtus.model
-
-    attr_accessor :validators
+    
+    include ActiveRecord::Validations
 
     attribute :id,          String, default: SecureRandom.hex(6)
     attribute :errors,      Array,  default: []
 
-    def valid?
-      errors.empty?
+    def new_record?
+      true
     end
 
-    def self.validates(attribute, validator_type)
-      @validators ||= []
-      @validators << "validators/#{validator_type.keys[0]}".classify.constantize.new(self, self.attribute_set[attribute], validator_type.values[0])
+    def self._reflect_on_association(args)
     end
   end
 end

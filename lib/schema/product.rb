@@ -6,7 +6,6 @@ module Schema
     attribute :code,  String
     attribute :packs, Array[Schema::Pack]
 
-    validates :name, presence: true
-    validates :code, presence: true
+    validates :name, :code, presence: true
   end
 end
