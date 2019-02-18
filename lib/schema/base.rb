@@ -11,6 +11,7 @@ module Schema
 
     attr_accessor :validators
 
+    attribute :id,          String, default: SecureRandom.hex(6)
     attribute :errors,      Array,  default: []
 
     def valid?
