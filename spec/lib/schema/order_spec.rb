@@ -1,23 +1,8 @@
 require 'spec_helper'
 
 RSpec.describe Schema::Order, type: :schema do
-  let!(:valid_samples) do
-    [
-      "10 VS5",
-      "14 MB11",
-      "13 CF",
-      "100 VV2"
-    ]
-  end
-
-  let!(:invalid_samples) do
-    [
-      "xx 123",
-      "XX 1234",
-      "some random text",
-      "more random text"
-    ]
-  end
+  let!(:valid_samples) { ["10 VS5", "14 MB11", "13 CF", "100 VV2"] }
+  let!(:invalid_samples) { ["xx 123", "XX 1234", "some random text", "more random text"] }
 
   describe "#parse_request" do
     context 'when base_request is valid' do

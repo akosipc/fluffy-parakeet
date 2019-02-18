@@ -8,6 +8,30 @@ RSpec.describe Services::OrderProcessor, type: :services do
   let!(:processor) { Services::OrderProcessor.new(setup_bakery, order_request) }
 
   describe '#process!' do
+    context 'when order_request is valid' do
+      let!(:order_request) { "10 VS5" }
+
+      it 'computes the order and order_items' do
+        processor.process!
+      end
+    end
+
+    context 'when order_request is also valid' do
+      let!(:order_request) { "14 MB11" }
+
+      it 'computes the order and order_items' do
+        processor.process!
+      end
+    end
+
+    context 'when order_request is really also valid' do
+      let!(:order_request) { "13 CF" }
+
+      it 'computes the order and order_items' do
+        processor.process!
+      end
+    end
+
     context 'when order_request is empty' do
       let!(:order_request) { "" }
 
@@ -28,6 +52,16 @@ RSpec.describe Services::OrderProcessor, type: :services do
       end
     end
 
+    context 'when order_request is valid but product_code is not' do
+      let!(:order_request) { "10 VSX" }
+
+      it 'raises an error saying that the product_code is invalid' do
+        expect {
+          processor.process!
+        }.to raise_error(Services::OrderProcessorArgumentError, "Product Code is invalid. Given VSX")
+      end
+    end
+
     context 'when collection is empty' do
       let!(:setup_bakery) { [] }
 
@@ -37,6 +71,5 @@ RSpec.describe Services::OrderProcessor, type: :services do
         }.to raise_error(Services::OrderProcessorArgumentError, "Collection is invalid.")
       end
     end
-
   end
 end
