@@ -5,8 +5,6 @@ require_relative '../lib/schema/product'
 require_relative '../lib/schema/pack'
 require_relative '../lib/services/order_processor'
 
-Dir[File.join("../lib/validators/*.rb")].each {|f| require f }
-
 def setup_bakery
   [].tap do |inventory|
     vegemite = Schema::Product.new(
