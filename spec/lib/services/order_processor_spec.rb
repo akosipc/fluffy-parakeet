@@ -13,13 +13,14 @@ RSpec.describe Services::OrderProcessor, type: :services do
 
       it 'computes the order and order_items' do
         order = processor.process!
+        order_items = order.order_items
 
         expect(processor.process!).to be_truthy
 
         expect(order).to be_instance_of Schema::Order
-        expect(order.order_items[0].quantity).to eq 2
-        expect(order.order_items[0].amount).to eq 17.98
-        expect(order.order_items[0].currency).to eq "$"
+        expect(order_items[0].quantity).to eq 2
+        expect(order_items[0].amount).to eq 17.98
+        expect(order_items[0].pack.quantity).to eq 5
       end
     end
 
@@ -28,10 +29,17 @@ RSpec.describe Services::OrderProcessor, type: :services do
 
       it 'computes the order and order_items' do
         order = processor.process!
+        order_items = order.order_items
         
         expect(processor.process!).to be_truthy
 
-        expec(order).to be_instance_of Schema::Order
+        expect(order).to be_instance_of Schema::Order
+        expect(order_items[0].quantity).to eq 2
+        expect(order_items[0].amount).to eq 33.90
+        expect(order_items[0].pack.quantity).to eq 5
+        expect(order_items[1].quantity).to eq 2
+        expect(order_items[1].amount).to eq 19.90
+        expect(order_items[1].pack.quantity).to eq 2
       end
     end
 
@@ -39,7 +47,18 @@ RSpec.describe Services::OrderProcessor, type: :services do
       let!(:order_request) { "13 CF" }
 
       it 'computes the order and order_items' do
-        processor.process!
+        order = processor.process!
+        order_items = order.order_items
+
+        expect(processor.process!).to be_truthy
+
+        expect(order).to be_instance_of Schema::Order
+        expect(order_items[0].quantity).to eq 2
+        expect(order_items[0].amount).to eq 19.90
+        expect(order_items[0].pack.quantity).to eq 5
+        expect(order_items[1].quantity).to eq 1
+        expect(order_items[1].amount).to eq 5.95
+        expect(order_items[1].pack.quantity).to eq 3
       end
     end
 

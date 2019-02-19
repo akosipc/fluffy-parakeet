@@ -5,6 +5,7 @@ module Schema
     attribute :quantity,    Integer
     attribute :currency,    String,   default: "$"
     attribute :pack_id,     String
+    attribute :pack,        Pack
     attribute :amount,      Decimal,  default: 0.00
   end
 end

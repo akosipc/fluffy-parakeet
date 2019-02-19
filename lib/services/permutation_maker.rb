@@ -25,10 +25,6 @@ module Services
       end
     end
 
-    def usable_permutation
-      make.select{ |_key, perm| return perm if perm.valid? }
-    end
-
     private
 
     def possible_permutations(value)
