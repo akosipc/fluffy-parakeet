@@ -12,7 +12,13 @@ RSpec.describe Services::OrderProcessor, type: :services do
       let!(:order_request) { "10 VS5" }
 
       it 'computes the order and order_items' do
-        processor.process!
+        order = processor.process!
+
+        expect(processor.process!).to be_truthy
+        expect(order).to be_instance_of Schema::Order
+        expect(order.order_items[0].quantity).to eq 2
+        expect(order.order_items[0].amount).to eq 17.98
+        expect(order.order_items[0].currency).to eq "$"
       end
     end
 
@@ -20,7 +26,7 @@ RSpec.describe Services::OrderProcessor, type: :services do
       let!(:order_request) { "14 MB11" }
 
       it 'computes the order and order_items' do
-        processor.process!
+        output = processor.process!
       end
     end
 

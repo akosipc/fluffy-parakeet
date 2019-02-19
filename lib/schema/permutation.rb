@@ -1,5 +1,6 @@
 module Schema
   class Permutation < Base
+    attribute :value,         Integer
     attribute :dividend,      Integer
     attribute :remainder,     Integer
     attribute :permutations,  Hash

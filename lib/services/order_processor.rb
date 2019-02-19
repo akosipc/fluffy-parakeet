@@ -14,38 +14,33 @@ module Services
     def process!
       before_process
 
-      build_order_items
+      @order.order_items = build_order_items
 
-      after_process
+      #after_process
+      @order
     end
 
     private 
 
     def build_order_items
       if product = @collection.find{ |m| m.code == @order.product_code }
-        wat = recurse(product, product.packs.sort_by!{ |p| p.quantity }.reverse!)
+        sorted_packs = product.packs.sort_by!{ |p| p.quantity }.reverse!
+        permutations = Services::PermutationMaker.new(sorted_packs.collect(&:quantity), @order.quantity).valid_permutations
+
+        permutations.map do |perm|
+          selected_pack = sorted_packs.find{ |p| p.quantity == perm.value } 
+
+          Schema::OrderItem.new({
+            quantity: perm.dividend,
+            currency: selected_pack.currency,
+            pack_id: selected_pack.id,
+            amount: selected_pack.price * perm.dividend,
+            pack: selected_pack
+          })
+        end
       else
         raise OrderProcessorArgumentError, "Product Code is invalid. Given #{@order.product_code}"
       end
-    end
-
-    def recurse(product, packs)
-      do_recurse(packs, @order.quantity, [])
-    end
-
-    def do_recurse(packs, order_quantity, acc)
-      return acc if order_quantity <= 0
-
-      selected_pack = packs.find{ |p| p.quantity <= order_quantity }
-
-      acc << Schema::OrderItem.new({
-        quantity: selected_pack.quantity,
-        currency: selected_pack.currency,
-        pack_id: selected_pack.id,
-        amount: selected_pack.price
-      })
-
-      do_recurse(packs, order_quantity - selected_pack.quantity, acc)
     end
 
     def before_process
