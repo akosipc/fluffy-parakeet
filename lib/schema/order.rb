@@ -21,5 +21,15 @@ module Schema
     def compute
       order_items.sum{ |x| x.amount }
     end
+
+    def render_details
+      puts "---------------"
+      order_items.each_with_index do |oi, index|
+        puts "#{index + 1}. #{oi.quantity} x #{oi.pack.quantity} - #{oi.currency}#{oi.amount}"
+      end
+      puts "---------------"
+
+      puts "Total: #{currency} #{compute}"
+    end
   end
 end

@@ -14,9 +14,11 @@ module Services
     def process!
       before_process
 
-      product, sorted_packs = find_product_and_packs
-      perms = make_permutations(sorted_packs)
-      @order.order_items = build_order_items(sorted_packs, discover_best_perm(perms))
+      sorted_packs = find_packs
+      @order.order_items = build_order_items(
+        sorted_packs, 
+        discover_best_perm(make_permutations(sorted_packs))
+      )
 
       #after_process
       @order
@@ -24,11 +26,9 @@ module Services
 
     private 
 
-    def find_product_and_packs
+    def find_packs
       if product = @collection.find{ |m| m.code == @order.product_code }
-        sorted_packs = product.packs.sort_by!{ |p| p.quantity }.reverse!
-
-        [product, sorted_packs]
+        product.packs.sort_by!{ |p| p.quantity }.reverse!
       else
         raise OrderProcessorArgumentError, "Product Code is invalid. Given #{@order.product_code}"
       end

@@ -4,6 +4,7 @@ require_relative '../lib/schema/order'
 require_relative '../lib/schema/product'
 require_relative '../lib/schema/pack'
 require_relative '../lib/services/order_processor'
+require_relative '../lib/services/permutation_maker'
 
 def setup_bakery
   [].tap do |inventory|
@@ -44,7 +45,8 @@ bakery = setup_bakery
 
 ARGF.each do |order_request|
   begin
-    Services::OrderProcessor.new(bakery, order_request).process!
+    order = Services::OrderProcessor.new(bakery, order_request.strip).process!
+    order.render_details
   rescue Services::OrderProcessorError => e
     puts e
   end
