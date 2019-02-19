@@ -8,7 +8,7 @@ module Schema
       if permutations.any?
         permutations.each { |_key, object| return false unless object.valid?  }
       else
-        remainder == 0 && permutations.count == 0
+        remainder == 0 && permutations.length == 0
       end
     end
   end
