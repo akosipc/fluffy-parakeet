@@ -1,3 +1,5 @@
+require_relative '../schema/permutation'
+
 module Services
   class PermutationMaker
     def initialize(collection, value, options = {})
@@ -13,11 +15,11 @@ module Services
           dividend = @value / member
           remainder = @value % member
 
-          hash[member] = {
-            division: dividend,
+          hash[member] = Schema::Permutation.new(
+            dividend: dividend,
             remainder: remainder,
             permutations: remainder.zero? ? [] : Services::PermutationMaker.new(possible_permutations(member), @value - (member * dividend)).make!
-          }
+          )
         end
       end
     end
