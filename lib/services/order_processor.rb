@@ -14,7 +14,8 @@ module Services
     def process!
       before_process
 
-      @order.order_items = build_order_items
+      product, sorted_packs = find_product_and_packs
+      @order.order_items = build_order_items(sorted_packs, discover_best_perm(sorted_packs))
 
       #after_process
       @order
@@ -22,25 +23,30 @@ module Services
 
     private 
 
-    def build_order_items
+    def find_product_and_packs
       if product = @collection.find{ |m| m.code == @order.product_code }
         sorted_packs = product.packs.sort_by!{ |p| p.quantity }.reverse!
-        permutations = Services::PermutationMaker.new(sorted_packs.collect(&:quantity), @order.quantity).valid_permutations
 
-        permutations.map do |perm|
-          selected_pack = sorted_packs.find{ |p| p.quantity == perm.value } 
-
-          Schema::OrderItem.new({
-            quantity: perm.dividend,
-            currency: selected_pack.currency,
-            pack_id: selected_pack.id,
-            amount: selected_pack.price * perm.dividend,
-            pack: selected_pack
-          })
-        end
+        [product, sorted_packs]
       else
         raise OrderProcessorArgumentError, "Product Code is invalid. Given #{@order.product_code}"
       end
+    end
+
+    def discover_best_perm(sorted_packs)
+      Services::PermutationMaker.new(sorted_packs.collect(&:quantity), @order.quantity).usable_permutation
+    end
+
+    def build_order_items(sorted_packs, perm)
+      selected_pack = sorted_packs.find{ |p| p.quantity == perm.value } 
+
+      Schema::OrderItem.new({
+        quantity: perm.dividend,
+        currency: selected_pack.currency,
+        pack_id: selected_pack.id,
+        amount: selected_pack.price * perm.dividend,
+        pack: selected_pack
+      })
     end
 
     def before_process

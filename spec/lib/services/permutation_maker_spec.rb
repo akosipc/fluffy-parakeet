@@ -83,12 +83,13 @@ RSpec.describe Services::PermutationMaker, type: :service do
     end
   end
 
-  describe "#valid_permutations" do
+  describe "#usable_permutation" do
     it "returns the valid permutations only" do
-      output = service3.valid_permutations
+      output = service3.usable_permutation
 
-      expect(output).to be_instance_of Array
-      expect(output.length).to eq 1
+      expect(output).to be_instance_of Schema::Permutation
+      expect(output.dividend).to eq 2
+      expect(output.value).to eq 5
     end
   end
 end

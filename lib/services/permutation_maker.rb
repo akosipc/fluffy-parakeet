@@ -25,8 +25,8 @@ module Services
       end
     end
 
-    def valid_permutations
-      make.collect{ |_key, perm| perm if perm.valid? }.reject(&:nil?)
+    def usable_permutation
+      make.select{ |_key, perm| return perm if perm.valid? }
     end
 
     private
